@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/history.h"
 
+#include "tg_hidesb.h"
 #include "history/view/history_view_element.h"
 #include "history/view/history_view_item_preview.h"
 #include "history/view/history_view_translate_tracker.h"
@@ -1794,6 +1795,14 @@ void History::viewReplaced(not_null<const Element*> was, Element *now) {
 
 void History::addItemToBlock(not_null<HistoryItem*> item) {
 	Expects(!item->mainView());
+
+	if (TgHideSb::IsHidden(item->from()->id.value & PeerId::kChatTypeMask)) {
+		if (isBuildingFrontBlock()
+			&& _buildingFrontBlock->expectedItemsCount > 0) {
+			--_buildingFrontBlock->expectedItemsCount;
+		}
+		return;
+	}
 
 	auto block = prepareBlockForAddingItem();
 

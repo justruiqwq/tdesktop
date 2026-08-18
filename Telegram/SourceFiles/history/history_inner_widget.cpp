@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/history_inner_widget.h"
 
+#include "tg_hidesb.h"
 #include "api/api_polls.h"
 #include "chat_helpers/stickers_emoji_pack.h"
 #include "core/application.h"
@@ -3850,6 +3851,31 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 				_menu.get(),
 				leaderOrSelf,
 				poll);
+		}
+	}
+
+	if (leaderOrSelf) {
+		const auto bareId = quint64(
+			leaderOrSelf->from()->id.value & PeerId::kChatTypeMask);
+		if (bareId) {
+			const auto hidden = TgHideSb::IsHidden(bareId);
+			const auto peer = _peer;
+			const auto controller = _controller;
+			_menu->addAction(hidden
+				? tr::lng_tghidesb_unhide(tr::now)
+				: tr::lng_tghidesb_hide(tr::now), [=] {
+				if (hidden) {
+					TgHideSb::Remove(bareId);
+				} else {
+					TgHideSb::Add(bareId);
+				}
+				if (const auto history = peer->owner().history(peer)) {
+					history->clear(History::ClearType::Unload);
+				}
+				controller->showPeerHistory(
+					peer,
+					Window::SectionShow::Way::ClearStack);
+			}, hidden ? &st::menuIconRestore : &st::menuIconBlock);
 		}
 	}
 
