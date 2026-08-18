@@ -7,8 +7,7 @@ on:
       - dev
     paths:
       - 'Telegram/SourceFiles/tg_hidesb.**'
-      - 'Telegram/SourceFiles/history/view/history_view_list_widget.cpp'
-      - 'Telegram/SourceFiles/history/view/history_view_context_menu.cpp'
+      - 'Telegram/SourceFiles/history/**'
       - '.github/workflows/hidesb-win.yml'
 
 jobs:
