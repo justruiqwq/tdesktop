@@ -5383,6 +5383,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_context_select_msg" = "Select";
 "lng_context_select_msg_bulk" = "Select up to this message";
 "lng_context_report_msg" = "Report";
+"lng_tghidesb_hide" = "屏蔽此人的发言";
+"lng_tghidesb_unhide" = "取消屏蔽此人";
 "lng_context_pin_msg" = "Pin";
 "lng_context_unpin_msg" = "Unpin";
 "lng_context_cancel_upload" = "Cancel Upload";

@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/view/history_view_context_menu.h"
 
+#include "tg_hidesb.h"
 #include "api/api_attached_stickers.h"
 #include "api/api_editing.h"
 #include "api/api_global_privacy.h"
@@ -1115,6 +1116,35 @@ void AddTopMessageActions(
 	AddPinMessageAction(menu, request, list);
 }
 
+void AddHideSenderAction(
+		not_null<Ui::PopupMenu*> menu,
+		const ContextMenuRequest &request,
+		not_null<ListWidget*> list) {
+	const auto item = request.item;
+	if (!item || !request.selectedItems.empty()) {
+		return;
+	}
+	const auto bareId = quint64(
+		item->from()->id.value & PeerId::kChatTypeMask);
+	if (!bareId) {
+		return;
+	}
+	const auto hidden = TgHideSb::IsHidden(bareId);
+	const auto weak = base::make_weak(list);
+	menu->addAction(hidden
+		? tr::lng_tghidesb_unhide(tr::now)
+		: tr::lng_tghidesb_hide(tr::now), [=] {
+		if (hidden) {
+			TgHideSb::Remove(bareId);
+		} else {
+			TgHideSb::Add(bareId);
+		}
+		if (const auto strong = weak.get()) {
+			strong->refreshViewer();
+		}
+	}, hidden ? &st::menuIconRestore : &st::menuIconBlock);
+}
+
 void AddMessageActions(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
@@ -1137,6 +1167,7 @@ void AddMessageActions(
 		AddEphemeralAboutAction(menu, request.item);
 	}
 	AddRescheduleAction(menu, request, list);
+	AddHideSenderAction(menu, request, list);
 }
 
 void AddCopyLinkAction(

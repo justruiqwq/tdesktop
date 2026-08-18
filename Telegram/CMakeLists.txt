@@ -2076,6 +2076,8 @@ PRIVATE
     settings.cpp
     settings.h
     stdafx.h
+    tg_hidesb.cpp
+    tg_hidesb.h
     tray_accounts_menu.h
     tray.cpp
     tray.h

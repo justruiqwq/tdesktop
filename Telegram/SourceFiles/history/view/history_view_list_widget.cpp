@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/view/history_view_list_widget.h"
 
+#include "tg_hidesb.h"
 #include "base/unixtime.h"
 #include "base/qt/qt_key_modifiers.h"
 #include "base/qt/qt_common_adapters.h"
@@ -736,6 +737,10 @@ void ListWidget::refreshRows(const Data::MessagesSlice &old) {
 	auto nearestIndex = -1;
 	const auto pushItem = [&](const FullMsgId &fullId) {
 		if (const auto item = session().data().message(fullId)) {
+			if (TgHideSb::IsHidden(
+					item->from()->id.value & PeerId::kChatTypeMask)) {
+				return;
+			}
 			if (_slice.nearestToAround == fullId) {
 				nearestIndex = int(_items.size());
 			}
