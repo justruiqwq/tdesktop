@@ -60,6 +60,19 @@ jobs:
           git config --global user.email "you@example.com"
           git config --global user.name "Sample"
 
+      - name: Install ATL component.
+        shell: pwsh
+        run: |
+          $vsInstaller = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"
+          $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          $p = Start-Process -FilePath $vsInstaller -Wait -PassThru -ArgumentList `
+            'modify','--installPath',"`"$vsPath`"",'--quiet','--norestart','--nocache', `
+            '--add','Microsoft.VisualStudio.Component.VC.ATL', `
+            '--add','Microsoft.VisualStudio.Component.VC.ATLMFC'
+          if ($p.ExitCode -ne 0 -and $p.ExitCode -ne 3010) {
+            Write-Host "vs_installer exit code: $($p.ExitCode)"
+          }
+
       - uses: ilammy/msvc-dev-cmd@v1
         name: Native Tools Command Prompt.
         with:
@@ -90,8 +103,8 @@ jobs:
             !${{ env.LibrariesPath }}\[qQ]t[_-]*
             ${{ env.LibrariesPath }}\cache_keys\*
             !${{ env.LibrariesPath }}\cache_keys\[qQ]t[_-]*
-          key: ${{ runner.OS }}-x64-libs-rel-v1-${{ env.CACHE_KEY }}
-          restore-keys: ${{ runner.OS }}-x64-libs-rel-v1-
+          key: ${{ runner.OS }}-x64-libs-rel-v2-${{ env.CACHE_KEY }}
+          restore-keys: ${{ runner.OS }}-x64-libs-rel-v2-
 
       - name: Qt cache.
         id: cache-qt
