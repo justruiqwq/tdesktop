@@ -35,18 +35,12 @@ jobs:
           $paths = @(
             'C:\Android',
             'C:\Program Files (x86)\Android',
-            'C:\Program Files\dotnet',
             'C:\Program Files\Google\Chrome',
             'C:\Program Files (x86)\Microsoft\Edge',
-            'C:\hostedtoolcache\windows\Ruby',
-            'C:\hostedtoolcache\windows\go',
-            'C:\hostedtoolcache\windows\node',
-            'C:\hostedtoolcache\windows\Python',
             'C:\Program Files\MongoDB',
             'C:\Program Files\PostgreSQL',
             'C:\Program Files\Microsoft SQL Server',
-            'C:\Program Files\Unity',
-            'C:\Program Files\LLVM'
+            'C:\Program Files\Unity'
           )
           foreach ($p in $paths) {
             if (Test-Path $p) {
